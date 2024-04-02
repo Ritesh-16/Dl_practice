@@ -1,0 +1,453 @@
+
+
+    #Practical 1 Write a program and preprocess the data in python.
+    import pandas as pd
+    from sklearn.preprocessing import StandardScaler, OneHotEncoder
+    from sklearn.impute import SimpleImputer
+    from sklearn.compose import ColumnTransformer
+    from sklearn.pipeline import Pipeline
+    # Your dataset
+    data = {
+    'Country': ['India', 'Sri Lanka', 'China', 'Sri Lanka', 'China', 'India', 'Sri Lanka', 'India', 'China', 'India', 'Sri Lanka', 'China', 'India', 'India', 'Sri Lanka'],
+    'Age': [34, 22, 31, 29, 55, 24, 28, None, 51, 44, 21, 25, 33, 42, 33],
+    'Salary': [92000, 25000, 74000, None, 98000, 30000, 40000, 60000, 89000, 78000, 20000, 30000, 45000, 65000, 22000],
+    'Purchased': ['Yes', 'Yes', 'Yes', 'No', 'Yes', 'No', 'No', 'No', 'Yes', 'Yes', 'No', 'Yes', 'Yes', 'Yes', 'No']
+    }
+    df = pd.DataFrame(data)
+    # Separate numerical and categorical columns
+    numeric_features = ['Age', 'Salary']
+    categorical_features = ['Country']
+    # Define preprocessing steps
+    numeric_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='mean')),
+    ('scaler', StandardScaler())])
+    categorical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='most_frequent')),
+    ('onehot', OneHotEncoder(handle_unknown='ignore', sparse=False))])
+    # Combine preprocessing steps
+    preprocessor = ColumnTransformer(
+    transformers=[('num', numeric_transformer, numeric_features),
+    ('cat', categorical_transformer, categorical_features)])
+    # Apply preprocessing to the data
+    preprocessed_data = preprocessor.fit_transform(df)
+    # Get feature names after one-hot encoding
+    feature_names = numeric_features + list(preprocessor.named_transformers_['cat']
+    .named_steps['onehot']
+    .get_feature_names_out(categorical_features))
+    # Convert preprocessed data back to a DataFrame
+    preprocessed_df = pd.DataFrame(preprocessed_data, columns=feature_names)
+    print(preprocessed_df)
+    #Preprocessing the data
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    # Assuming you have your preprocessed data in preprocessed_df
+    # Visualizing Age distribution
+    plt.figure(figsize=(8, 6))
+    sns.histplot(preprocessed_df['Age'], bins=20, kde=True, color='skyblue')
+    plt.title('Distribution of Age')
+    plt.xlabel('Age')
+    plt.ylabel('Frequency')
+    plt.show()
+    # Visualizing Salary distribution
+    plt.figure(figsize=(8, 6))
+    sns.histplot(preprocessed_df['Salary'], bins=20, kde=True, color='salmon')
+    plt.title('Distribution of Salary')
+    plt.xlabel('Salary')
+    plt.ylabel('Frequency')
+    plt.show()
+    # Visualizing relationship between Age and Salary
+    plt.figure(figsize=(8, 6))
+    sns.scatterplot(x='Age', y='Salary', data=preprocessed_df, color='green')
+    plt.title('Relationship between Age and Salary')
+    plt.xlabel('Age')
+    plt.ylabel('Salary')
+    plt.show()
+    # Visualizing categorical data (Country after one-hot encoding)
+    country_columns = [col for col in preprocessed_df.columns if 'Country' in col]
+    country_data = preprocessed_df[country_columns]
+    plt.figure(figsize=(10, 6))
+    sns.countplot(data=country_data)
+    plt.title('Count of Countries')
+    plt.xlabel('Country')
+    plt.ylabel('Count')
+    plt.show()
+
+    #Practical 2 Write a program to demonstrate various operations related to tensor, matrix & vector.
+
+    import numpy as np
+    scalar=5
+    tensor_1d=np.array([1,2,3])
+    tensor_2d=np.array([[1,2,3],[4,5,6],[7,8,9]])
+    add=np.add([1,2,3],[4,5,6])
+    mul=np.multiply([1,2,3],[1,2,3])
+    sub=np.subtract([2,1,2],[7,8,6])
+    transpose=np.transpose([[1,2,3],[4,5,6]])
+    dot=np.dot([1,2,3],[4,5,6])
+    zeros=np.zeros(4)
+    unit=np.eye(4)
+    unit
+
+    import tensorflow as tf
+    m=tf.constant([[1,2,3],[4,5,6],[7,8,9]], shape=(3,3))
+    print(m)
+
+    n=tf.constant([[10,20,30],[40,50,60],[70,80,90]],shape=(3,3))
+    print(n)
+
+    add1=tf.add(m,n)
+    add1
+
+    mul1=tf.multiply(n,m)
+    mul1
+
+    mat=tf.matmul(m,n)
+    mat
+
+    a=tf.zeros([3,3])
+    a
+
+    b=tf.zeros([3,3])
+
+    print(tf.reduce_max(a))
+    print(tf.reduce_max(b))
+
+    print(tf.argmax(a))
+
+    a=tf.ones([3,3])
+    a
+    tf.nn.softmax(a)
+
+    A=tf.constant([[1,2],[3,4]])
+    B=tf.reshape(A,[4,1])
+    B
+
+    a=tf.range(3,19,3)
+    a
+
+    tensor=tf.constant([[1,2,3],[4,5,6]])
+    tf.zeros_like(tensor)
+
+    tf.random.shuffle(tensor,seed=2,name=None)
+
+    # Practical 3 Perfrom the following matrix operation in python:
+    # 1. Finding eigen values and eigen vectors
+    # 2. Check for linear denpendent and linear independent
+    # 3. Perform matrix transpose
+    # 4. Perform diagnonal martix
+    # 5. Perform triangular marix
+    # 6. Perform orthogonal matrix using numpy modules
+
+    #1. Finding eigen values and eigen vectors
+    import numpy as np
+    matrix_a=np.array([[4,6,6],[1,3,2],[-1,-4,-3]])
+    #finding eigen values and eigenvectors
+    eigen_values,eigen_vectors=np.linalg.eig(matrix_a)
+    eigen_values,eigen_vectors
+    #checking for Linear Independence
+    rank = np.linalg.matrix_rank(matrix_a)
+    rows,columns=matrix_a.shape
+    if rank==min(rows,columns):
+      print("Independent")
+    else:
+      print("Dependent")
+
+    #transpose
+    np.transpose(matrix_a)
+
+    #diagonal matrix check
+    if sum(np.diag(matrix_a))==np.sum(matrix_a):
+      print("Diagonal Matrix")
+    else:
+      print("Not Diagonal")
+
+    #triangular matrix
+    if np.allclose(np.triu(matrix_a), matrix_a):
+        print("The matrix is upper triangular.")
+    elif np.allclose(np.tril(matrix_a), matrix_a):
+        print("The matrix is lower triangular.")
+    else:
+        print("The matrix is not triangular.")
+
+    #orthogonal matrix
+    matrix_a=[[0,1],[-1,0]]
+    product=np.dot(matrix_a,np.transpose(matrix_a))
+    unit_matrix=np.eye(len(matrix_a))
+    len(matrix_a)
+    if np.allclose(product,unit_matrix):
+      print("Orthogonal")
+    else:
+      print("Not Orthogonal")
+
+    #Practical 4 : Solve the EXOR problem using Deep learning
+
+    import tensorflow as tf
+    from keras.models import Sequential
+    from keras.layers import Dense
+    import numpy as np
+    # Define the XOR data
+    X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+    Y = np.array([[0], [1], [1], [0]])
+    # Create a deep feed-forward neural network
+    model = Sequential()
+    model.add(Dense(8, input_dim=2, activation='relu'))
+    model.add(Dense(1, activation='sigmoid'))
+    # Compile the model
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+    # Train the model
+    model.fit(X, Y, epochs=100, verbose=2)
+    # Evaluate the model
+    loss, accuracy = model.evaluate(X, Y)
+    print(f'\nLoss: {loss}, Accuracy: {accuracy}')
+    # Make predictions
+    predictions = model.predict(X)
+    rounded_predictions = np.round(predictions)
+    print('Predictions:', rounded_predictions.flatten())
+
+    #Practical 5:Performing Convolutional operation using CNN
+    from keras.layers import Convolution2D, MaxPooling2D, Activation
+    from keras.models import Sequential
+    from numpy import asarray
+    import matplotlib.pyplot as plt
+    import cv2
+
+    #Loading And Dispaly Image
+    img =cv2.imread('/content/images (1).jpg',cv2.IMREAD_GRAYSCALE)
+    plt.imshow(img,cmap='gray')
+    plt.show()
+
+    #Checking Image shape
+    img.shape
+
+    #Reshaping image Batch
+    img_batch=img.reshape(1,img.shape[0],img.shape[1],1)
+    img_batch
+
+    #Accessing Image batch shape
+    img_batch.shape
+
+    #Defining Sequential Model
+    img_batch.shape[1:]
+    model=Sequential()
+
+    #Adding Convolution layer
+    model.add(Convolution2D(1,(15,15), padding='valid',input_shape=img_batch.shape[1:]))
+
+    #printing model summary
+    model.summary()
+
+    #Predicting with model
+    conv_img=model.predict(img_batch)
+
+    #Checking Predicted iamge shape
+    conv_img.shape
+
+    #Reshaping predicted iamge for
+    conv_img_show=conv_img.reshape(conv_img.shape[1],conv_img.shape[2])
+    plt.imshow(conv_img_show,cmap="gray")
+    plt.show()
+
+
+    #Again with some changes
+    img_batch.shape[1:]
+    model2=Sequential()
+
+    model2.add(Convolution2D(1,(15,15), padding='valid',input_shape=img_batch.shape[1:]))
+    model2.add(Activation('relu'))
+
+    conv_img=model2.predict(img_batch)
+    conv_img.shape
+    conv_img_show=conv_img.reshape(conv_img.shape[1],conv_img.shape[2])
+    plt.imshow(conv_img_show,cmap="gray")
+    plt.show()
+
+    #
+    img_batch.shape[1:]
+    model3=Sequential()
+    model3.add(Convolution2D(1,(15,15), padding='valid',input_shape=img_batch.shape[1:]))
+
+    model3.add(Activation('relu'))
+    model3.add(MaxPooling2D(pool_size=(2,2)))
+    conv_img=model3.predict(img_batch)
+    conv_img.shape
+    conv_img_show=conv_img.reshape(conv_img.shape[1],conv_img.shape[2])
+    plt.imshow(conv_img_show,cmap="gray")
+    plt.show()
+
+    #model 3 defining sequential model
+    img_batch.shape[1:]
+    model2=Sequential()
+    #convutional layer
+    model2.add(Convolution2D(1,(3,3),padding='valid',input_shape=img_batch.shape[1:]))
+    #random weight initialization
+    model2.add(Activation('relu'))
+    #predicting with model2
+    conv_img=model2.predict(img_batch)
+    #checking
+    conv_img.shape
+    #reshaping predicted image for display
+    conv_img_show = conv_img.reshape(conv_img.shape[1], conv_img.shape[2])
+    plt.imshow(conv_img_show, cmap='gray')
+    plt.show()
+
+
+    #model4
+    img_batch.shape[1:]
+    model4=Sequential()
+    model4.add(Convolution2D(1,(15,15),padding='valid',input_shape=img_batch.shape[1:]))
+    #random weight initialization
+    model4.add(Activation('relu'))
+    model4.add(MaxPooling2D(pool_size=(2,2)))
+    #predicting with model2
+    conv_img=model4.predict(img_batch)
+    #checking
+    conv_img.shape
+    #reshaping predicted image for display
+    conv_img_show = conv_img.reshape(conv_img.shape[1], conv_img.shape[2])
+    plt.imshow(conv_img_show, cmap='gray')
+    plt.show()
+
+    #Practical 6 : Write a program to implement convolution with various layers
+
+    import tensorflow as tf
+    from tensorflow import keras
+    import matplotlib.pyplot as plt
+
+    from keras.datasets import fashion_mnist
+    from keras.layers import Dense,Conv2D,Dropout,MaxPooling2D,Flatten
+    from keras.models import Sequential
+
+    fashion_data=fashion_mnist.load_data()
+    (x_train,y_train),(x_test,y_test)=fashion_data
+    x_train,x_validate=x_train[:50000],x_train[50000:]
+    y_train,y_validate=y_train[:50000],y_train[50000:]
+
+    class_name=["T-Shirt/Top","Trousers","Pullover","Dress","Coat","Sandal","Shirt","Sneaker","Bag","Ankleboot"]
+    model=Sequential([
+        Conv2D(64,3,activation="relu",padding="same",input_shape=[28,28,1]),
+        MaxPooling2D(2),
+        Dense(22,activation="relu"),
+        Dropout(0.2),
+        Flatten(),
+        Dense(10,activation="softmax")
+    ])
+    model.compile(loss="sparse_categorical_crossentropy",metrics=['accuracy'],optimizer="adam")
+    output=model.fit(x_train,y_train,epochs=2,steps_per_epoch=5,validation_data=(x_validate,y_validate))
+    #increase epochs to 4 or something more the epochs more the time
+
+    #bhavesh
+    import tensorflow as tf
+    from tensorflow import keras
+    # Load Fashion MNIST dataset
+    fashion_mnist = keras.datasets.fashion_mnist
+    (x_train_full, y_train_full), (x_test, y_test) = fashion_mnist.load_data()
+    # Normalize the data
+    x_train_full, x_test = x_train_full / 255.0, x_test / 255.0
+    # Split training set into training and validation sets
+    X_validate, X_train = x_train_full[:500], x_train_full[500:]
+    Y_validate, Y_train = y_train_full[:500], y_train_full[500:]
+    class_names = ["T-shirt/Top", "Trouser", "Pullover", "Dress", "Coat", "Sandal", "Shirt", "Sneaker", "Bag", "Ankle boot"]
+    # Define the model
+    model = keras.models.Sequential([
+    keras.layers.Conv2D(64, 7, activation="relu", padding="same", input_shape=(28, 28, 1)),
+    keras.layers.MaxPooling2D(2),
+    keras.layers.Conv2D(128, 3, activation="relu", padding="same"),
+    keras.layers.Conv2D(128, 3, activation="relu", padding="same"),
+    keras.layers.MaxPooling2D(2),
+    keras.layers.Flatten(),
+    keras.layers.Dropout(0.5),
+    keras.layers.Dense(64, activation="relu"),
+    keras.layers.Dropout(0.5),
+    keras.layers.Dense(10, activation="softmax")
+    ])
+    model.summary()
+
+    hidden1 = model.layers[1]
+    hidden1_weights = hidden1.get_weights()
+    model.compile(loss="sparse_categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+    # Fit the model
+    history = model.fit(x_train, y_train, epochs=5, validation_data=(x_validate, y_validate))
+
+    #Practical 7 : Write a program to display & plot various performance parameters related to CNN.
+    import matplotlib.pyplot as plt
+    # Assuming you have your model, training data (train_images, train_labels),
+    # and test data (test_images, test_labels) prepared
+    # Train the model
+    history = model.fit(train_images, train_labels, epochs=10, validation_data=(test_images, test_labels))
+    # Visualize accuracy and loss curves
+    plt.plot(history.history['accuracy'], label="Accuracy")
+    plt.plot(history.history['val_accuracy'], label='Val accuracy')
+    plt.plot(history.history['loss'], label='Loss')
+    plt.plot(history.history['val_loss'], label='Val loss')
+    # Customize plot for clarity
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy/Loss')
+    plt.title('Model Training and Validation Performance')
+    plt.grid(True) # Add grid lines for better readability
+    plt.ylim(0, 1) # Set appropriate y-axis limits for accuracy
+    # Evaluate test data performance
+    test_loss, test_acc = model.evaluate(test_images, test_labels)
+    print('Test loss:', test_loss)
+    print('Test accuracy:', test_acc * 100)
+    # Optionally display the plot (if desired)
+    plt.legend(loc="lower right")
+    plt.show()
+
+    #Practical 8 Implementation of CNN to Predict numbers from Number Images.
+
+    from keras.datasets import mnist
+    from tensorflow.keras.utils import to_categorical
+    from keras.models import Sequential
+    from keras.layers import Dense, Conv2D, Flatten
+    import matplotlib.pyplot as plt
+    (X_train,Y_train), (X_test, Y_test) =mnist.load_data()
+    plt.imshow(X_train[2])
+    plt.show()
+
+    print(X_train[0].shape)
+    X_train = X_train.reshape(60000, 28, 28, 1)
+    X_train -= X_train.reshape(60000, 28, 28, 1)
+    X_test = X_test.reshape(10000, 28, 28, 1)
+
+    Y_train=to_categorical (Y_train)
+    Y_test=to_categorical (Y_test)
+    Y_train[0]
+    print(Y_train[0])
+
+    model=Sequential()
+    model.add(Conv2D (64, kernel_size=3, activation='relu', input_shape=(28,28,1)))
+    model.add(Conv2D (32, kernel_size=3, activation='relu'))
+    model.add(Flatten())
+    model.add(Dense (10, activation='softmax'))
+    model.compile(optimizer='adam',loss='categorical_crossentropy', metrics=["accuracy"])
+    model.fit(X_train,Y_train, validation_data=(X_test,Y_test), epochs=1)
+    print(model.predict(X_test[:4]))
+    print(Y_test[:4])
+
+    #Practical 9 Write a Program to implement RNN
+    import keras
+    from keras.datasets import mnist
+    from keras.models import Sequential
+    from keras.layers import Dense, Dropout, LSTM
+    from keras.optimizers import Adam
+    # Load and preprocess the dataset
+    (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    X_train = X_train.astype('float32') / 255.0
+    X_test = X_test.astype('float32') / 255.0
+    # Reshape input data for LSTM
+    X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], X_train.shape[2]))
+    X_test = X_test.reshape((X_test.shape[0], X_test.shape[1], X_test.shape[2]))
+    # Build the model
+    model = Sequential()
+    model.add(LSTM(128, input_shape=(X_train.shape[1:]), return_sequences=True))
+    model.add(Dropout(0.2))
+    model.add(LSTM(128))
+    model.add(Dense(64, activation='relu'))
+    model.add(Dropout(0.2))
+    model.add(Dense(10, activation='softmax'))
+    # Compile the model
+    model.compile(loss='sparse_categorical_crossentropy', optimizer='Adam', metrics=['accuracy'])
+    # Train the model
+    history = model.fit(X_train, y_train, epochs=3, validation_data=(X_test, y_test))
+    # Evaluate the model
+    model.evaluate(X_test, y_test, verbose=0)
